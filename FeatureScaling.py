@@ -18,6 +18,7 @@ normalized_df = pd.DataFrame(normalized_data,columns=df.columns)
 print(f"Normalized DataFrame:\n {normalized_df}")
 
 
+
 #StandardScaler
 import pandas as pandas
 from sklearn.preprocessing import StandardScaler
