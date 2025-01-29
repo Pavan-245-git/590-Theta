@@ -1,39 +1,25 @@
-#with min max scaler
-import pandas as pandas
-from sklearn.preprocessing import MinMaxScaler
-
-# Sample dataset with multiple features 
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import OneHotEncoder
 data = {
-    "age": [25, 30, 35, 40, 45],
-    "height" : [150, 160, 170, 180, 190],
-    "weight": [50, 60, 70, 80, 90],
-    }
+    "Customer_id":[1,2,3,4],
+    "Ranks":["First","Second","Third","Fourth"],
+    "fruits":["apple","banana","orange","kiwi"],
+    "Gender":["Male","Female","Male","Female"]
+}
 
-df=pd.DataFrame(data)
-print(f"Original DataFrame: {df}")
+df = pd.DataFrame(data)
+label_encoder = LabelEncoder()
+df["encoder_ranks"] = label_encoder.fit_transform(df["Ranks"])
+df["encoder_fruits"] = label_encoder.fit_transform(df["fruits"])
+print(f"The LabelEncoder Data id:\n {df}")
 
-scaler=MinMaxScaler()
-normalized_data = scaler.fit_transform(df)
-normalized_df = pd.DataFrame(normalized_data,columns=df.columns)
-print(f"Normalized DataFrame:\n {normalized_df}")
+one_hot_encoder = OneHotEncoder()
+column_encode = ["Gender","Ranks","fruits"]
 
+encoded_data = one_hot_encoder.fit_transform(df[column_encode])
+encoded_column = one_hot_encoder.get_feature_names_out(column_encode)
 
+encoded_df = pd.DataFrame(encoded_data_dense,columns=encoded_column)
 
-#StandardScaler
-import pandas as pandas
-from sklearn.preprocessing import StandardScaler
-
-# Sample dataset with multiple features 
-data = {
-    "age": [25, 30, 35, 40, 45],
-    "height" : [150, 160, 170, 180, 190],
-    "weight": [50, 60, 70, 80, 90],
-    }
-
-df=pd.DataFrame(data)
-print(f"Original DataFrame: {df}")
-
-scaler=StandardScaler()
-normalized_data = scaler.fit_transform(df)
-normalized_df = pd.DataFrame(normalized_data,columns=df.columns)
-print(f"Normalized DataFrame:\n {normalized_df}")
+print(f"The One Hot Encoder :\n {encoder_df}")
