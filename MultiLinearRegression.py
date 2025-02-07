@@ -157,3 +157,185 @@ model_influence_V = final_ml_V.get_influence()
 
 fig, ax = plt.subplots(figsize=(20,7))
 
+from google.colab import files
+uploaded = files.upload()
+file_name=list(uploaded.keys())[0]
+cars_new  = pd.read_csv(file_name)
+cars_new
+
+car1=cars_new.drop(cars_new.index[[70,76]],axis=0).reset_index()
+
+car1=car1.drop(['index'],axis=1)
+
+car1
+
+final_ml_V= smf.ols('MPG~WT+SP+HP',data = car1).fit()
+
+(final_ml_V.rsquared,final_ml_V.aic)
+
+final_ml_w= smf.ols('MPG~WT+SP+HP', data=car1).fit()
+
+(final_ml_w.rsquared,final_ml_w.aic)
+
+model_influence_V = final_ml_V.get_influence()
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+model_influence_V = final_ml_V.get_influence()
+(c_v, _) = model_influence_V.cooks_distance
+
+fig, ax = plt.subplots(figsize=(20,7))
+
+import pandas as pd
+from google.colab import files
+import numpy as np
+uploaded = files.upload()
+file_name=list(uploaded.keys())[0]
+print(file_name)
+
+df=pd.read_csv(file_name)
+df
+
+df.shape
+
+df.corr(numeric_only=True)
+
+import statsmodels.formula.api as smf
+
+model=smf.ols('Price~KM+Doors+HP+Age_08_04+Gears+Weight',data=df).fit()
+model.summary()
+
+model.params
+
+print(model.tvalues, '\n', model.pvalues)
+
+(model.rsquared, model.rsquared_adj)
+
+rsq_hp=smf.ols('Price~KM+Age_08_04+Gears+Weight+Doors+Cylinders',data=df).fit().rsquared
+vif_hp=1/(1-rsq_hp)
+vif_hp
+
+rsq_W=smf.ols('Price~KM+Age_08_04+Gears+HP+Doors',data=df).fit().rsquared
+vif_W=1/(1-rsq_W)
+vif_W
+
+rsq_G=smf.ols('Price~KM+Age_08_04+HP+Weight+Doors',data=df).fit().rsquared
+vif_G=1/(1-rsq_G)
+vif_G
+
+rsq_KM=smf.ols('Price~HP+Age_08_04+Gears+Weight+Doors',data=df).fit().rsquared
+vif_KM=1/(1-rsq_KM)
+vif_KM
+
+rsq_A=smf.ols('Price~KM+HP+Gears+Weight+Doors',data=df).fit().rsquared
+vif_A=1/(1-rsq_A)
+vif_A
+
+rsq_D=smf.ols('Price~KM+HP+Gears+Weight+Age_08_04',data=df).fit().rsquared
+vif_D=1/(1-rsq_D)
+vif_D
+
+d1= {'Variables':['Hp','Weight','Gears','KM','Age','Doors'],'VIF':[vif_hp,vif_W,vif_G,vif_KM,vif_A,vif_D]}
+VIF = pd.DataFrame(d1)
+VIF
+
+import statsmodels.api as sm
+import matplotlib.pyplot as plt
+
+qqplot = sm.qqplot(model.resid, line='q')
+plt.title('Normal Q-Q of residuals')
+plt.show()
+
+def get_standardized_values(vals):
+  return (vals-vals.mean())/vals.std()
+
+plt.scatter(get_standardized_values(model.fittedvalues),
+            get_standardized_values(model.resid))
+plt.title('Residual Plot')
+plt.xlabel('Standardized Fitted Values')
+plt.ylabel('Standardized Residuals values')
+plt.grid(True)
+plt.show()
+
+fig = plt.figure(figsize=(15,8))
+fig = sm.graphics.plot_regress_exog(model, 'HP', fig=fig)
+plt.show()
+
+fig = plt.figure(figsize=(15,8))
+fig = sm.graphics.plot_regress_exog(model, 'KM', fig=fig)
+plt.show()
+
+fig = plt.figure(figsize=(15,8))
+fig = sm.graphics.plot_regress_exog(model, 'Age_08_04', fig=fig)
+plt.show()
+
+fig = plt.figure(figsize=(15,8))
+fig = sm.graphics.plot_regress_exog(model, 'Gears', fig=fig)
+plt.show()
+
+fig = plt.figure(figsize=(15,8))
+fig = sm.graphics.plot_regress_exog(model, 'Weight', fig=fig)
+plt.show()
+
+fig = plt.figure(figsize=(15,8))
+fig = sm.graphics.plot_regress_exog(model, 'Doors', fig=fig)
+plt.show()
+
+model_influence = model.get_influence()
+(c, _) = model_influence.cooks_distance
+
+fig = plt.subplots(figsize=(10,10))
+plt.stem(np.arange(len(c)), np.round(c, 3))
+plt.xlabel('Row index')
+plt.ylabel('Cooks Distance')
+
+from statsmodels.graphics.regressionplots import influence_plot
+influence_plot(model,alpha=0.5)
+plt.grid(True)
+plt.show()
+
+df[df.index.isin([956,991,960,221,654,523,147])]
+
+df.head()
+
+import pandas as pd
+
+from google.colab import files
+uploaded = files.upload()
+file_name=list(uploaded.keys())[0]
+cars_new = pd .read_csv(file_name)
+cars_new
+
+car1 = cars_new.drop(cars_new.index[[956,991,960,221,654]],axis=0).reset_index()
+cars_new.shape
+
+car1 = car1.drop(['index'],axis=1)
+car1
+car1.shape
+
+final_ml = smf.ols('Price~KM+Age_08_04+Gears+Weight+Doors',data=car1).fit()
+final_ml.rsquared
+
+final_ml1 = smf.ols('Price~KM+Age_08_04',data=car1).fit()
+final_ml1.rsquared
+
+final_ml2 = smf.ols('Price~KM+Age_08_04+HP+Weight',data=car1).fit()
+final_ml2.rsquared
+
+final_ml4 = smf.ols('Price~KM+HP+Gears+Age_08_04',data=car1).fit()
+final_ml4.rsquared
+
+final_ml3 = smf.ols('Price~KM+Age_08_04+Gears+Weight+HP',data=car1).fit()
+final_ml3.rsquared
+
+km = float(input("Enter the km:"))
+age = float(input("Enter the age:"))
+hp = float(input("Enter the hp:"))
+weight = float(input("Enter the weight:"))
+gears = float(input("Enter the gears:"))
+
+user = pd.DataFrame({'KM':km,'Age_08_04':age,'HP':hp,'Weight':weight,'Gears':gears},index =[1])
+predict = final_ml3.predict(user)
+predict
+
