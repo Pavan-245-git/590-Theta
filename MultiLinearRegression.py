@@ -12,7 +12,9 @@ uploaded = files.upload()
 file_name=list(uploaded.keys())[0]
 print(file_name)
 
-df=pd.read_csv(file_name)
+import pandas as pd # Import the pandas library and assign it to the alias 'pd'
+
+df = pd.read_csv(file_name) # Now 'pd' is recognized and can be used to read the CSV
 df
 
 df.shape
@@ -36,4 +38,122 @@ print(ml_w.tvalues, '\n', ml_w.pvalues)
 
 ml_w=smf.ols('MPG~WT+VOL',data = df).fit() # Changed 'cars' to 'df'
 print(ml_w.tvalues, '\n', ml_w.pvalues)
+
+ml_w=smf.ols('MPG~WT+VOL+SP',data = df).fit() # Changed 'cars' to 'df'
+print(ml_w.tvalues, '\n', ml_w.pvalues)
+
+ml_w=smf.ols('MPG~WT+VOL+SP+HP',data = df).fit() # Changed 'cars' to 'df'
+print(ml_w.tvalues, '\n', ml_w.pvalues)
+
+#build model
+import statsmodels.formula.api as smf # Import statsmodels.formula.api and assign it to the alias 'smf'
+
+rsq_hp=smf.ols('HP~WT+VOL+SP',data=df).fit().rsquared
+vif_hp=1/(1-rsq_hp)
+vif_hp
+
+rsq_wt=smf.ols('WT~HP+VOL+SP',data=df).fit().rsquared
+vif_wt=1/(1-rsq_wt)
+vif_wt
+
+rsq_vol=smf.ols('VOL~HP+WT+SP',data=df).fit().rsquared
+vif_vol=1/(1-rsq_vol)
+vif_vol
+
+rsq_sp=smf.ols('SP~HP+WT+VOL',data=df).fit().rsquared
+vif_sp=1/(1-rsq_vol)
+vif_sp
+
+d1= {'Variables':['Hp','WT','VOL','SP'],'VIF':[vif_hp,vif_wt,vif_vol,vif_sp]}
+VIF = pd.DataFrame(d1)
+VIF
+
+import statsmodels.api as sm
+import matplotlib.pyplot as plt # Import the matplotlib library and assign it to the alias 'plt'
+
+qqplot=sm.qqplot(model.resid,line='q')
+plt.title("Normal Q-Q plot of residuals")
+plt.show()
+
+import numpy as np
+list(np.where(model.resid>10))
+
+def get_standardized_values( vals ):
+  return (vals - vals.mean())/vals.std()
+
+plt.scatter(get_standardized_values(model.fittedvalues),
+            get_standardized_values(model.resid))
+plt.title('Residual Plot')
+plt.xlabel('Standardized Fitted values')
+plt.ylabel('Standardized residual values')
+plt.grid()
+plt.show()
+
+fig = plt.figure(figsize=(15,8))
+fig = sm.graphics.plot_regress_exog(model, 'HP', fig=fig)
+plt.show()
+
+fig = plt.figure(figsize=(16,8))
+fig = sm.graphics.plot_regress_exog(model, 'WT', fig=fig)
+plt.show()
+
+fig = plt.figure(figsize=(17,8))
+fig = sm.graphics.plot_regress_exog(model, 'SP', fig=fig)
+plt.show()
+
+fig = plt.figure(figsize=(18,8))
+fig = sm.graphics.plot_regress_exog(model, 'VOL', fig=fig)
+plt.show()
+
+model_influence = model.get_influence()
+(c, _) = model_influence.cooks_distance
+
+fig = plt.subplots(figsize=(20, 7))
+plt.stem(np.arange(len(c)), np.round(c, 3))
+plt.xlabel('Row index')
+plt.ylabel('Cooks Distance')
+plt.show()
+
+from statsmodels.graphics.regressionplots import influence_plot
+influence_plot(model,alpha=0.5)
+plt.show()
+
+k = df.shape[1]
+n = df.shape[0]
+leverage_cutoff = 3*((k + 1)/n)
+leverage_cutoff
+
+df[df.index.isin([70, 76])]
+
+df.head()
+
+from google.colab import files
+uploaded = files.upload()
+file_name=list(uploaded.keys())[0]
+cars_new  = pd.read_csv(file_name)
+cars_new
+
+car1=cars_new.drop(cars_new.index[[70,76]],axis=0).reset_index()
+
+car1=car1.drop(['index'],axis=1)
+
+car1
+
+final_ml_V= smf.ols('MPG~WT+SP+HP',data = car1).fit()
+
+(final_ml_V.rsquared,final_ml_V.aic)
+
+final_ml_w= smf.ols('MPG~WT+SP+HP', data=car1).fit()
+
+(final_ml_w.rsquared,final_ml_w.aic)
+
+model_influence_V = final_ml_V.get_influence()
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+model_influence_V = final_ml_V.get_influence()
+(c_v, _) = model_influence_V.cooks_distance
+
+fig, ax = plt.subplots(figsize=(20,7))
 
