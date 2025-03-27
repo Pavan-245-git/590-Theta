@@ -17,13 +17,3 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import mean_squared_error
 import xgboost as xgb
 import numpy as np
-
-df = pd.read_csv('/content/patient_drag_quantity_data_with_30_features.csv')
-df.to_csv(csv_file, index=False)
-
-print(df)
-label_encoder = LabelEncoder()
-categorical_cols = ['Gender', 'Region', 'Grade Level', 'Mother Education', 'Father Education']
-for col in categorical_cols:
-    df[col] = label_encoder.fit_transform(df[col])
-
